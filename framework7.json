@@ -1,0 +1,20 @@
+{
+  "cwd": "C:\\Users\\saadi001\\Desktop\\Projects\\f7svelte",
+  "type": [
+    "pwa",
+    "web"
+  ],
+  "name": "ChatFlow",
+  "framework": "svelte",
+  "template": "single-view",
+  "bundler": "vite",
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": false
+}
