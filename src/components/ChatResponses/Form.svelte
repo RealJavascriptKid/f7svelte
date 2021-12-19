@@ -8,11 +8,12 @@
     export let inputs = [{
         type:'text',
         placeholder:'Enter First Name',
+        required:false
 
     },{
         type:'email',
         placeholder:'Enter Email',
-        
+        required:true
     },{
         type:'date',
         placeholder:'Enter DOB',
@@ -28,8 +29,12 @@
             console.log(`${input.placeholder}:`,input)
         }
         
-
-        addMessage("Saad");
+        if(isSingleInput){
+            addMessage(inputs[0].value);
+        }else{
+            addMessage({text:'Form Data',value:inputs});
+        }
+        
    }
 
 </script>
@@ -44,6 +49,7 @@
                 bind:value={input.value}
                 validate
                 readonly
+                required={input.required}
                 calendarParams={{openIn: 'customModal', header: true, footer: true, dateFormat: 'MM dd yyyy'}}
             ></ListInput>
 
@@ -55,6 +61,7 @@
                 bind:value={input.value}
                 validate
                 readonly
+                required={input.required}
                 calendarParams={{openIn: 'customModal', header: true, footer: true,  dateFormat: 'MM dd yyyy', rangePicker: true }}
             ></ListInput>
 
@@ -66,6 +73,7 @@
                 bind:value={input.value}
                 validate
                 readonly
+                required={input.required}
                 calendarParams={{openIn: 'customModal', header: true, footer: true,  dateFormat: 'MM dd yyyy H::mm:ss A', timePicker: true }}
             ></ListInput>
 
@@ -76,7 +84,7 @@
                 placeholder={input.placeholder || input.type}
                 validate
                 clearButton
-                required
+                required={input.required}
                 bind:value={input.value}
                 />
 
@@ -87,17 +95,14 @@
                     placeholder={input.placeholder || input.type}
                     validate
                     clearButton
-                    required
+                    required={input.required}
                     bind:value={input.value}
                     />        
 
         {/if}
     {/each}
-   
-  
-  
-   <ListItem>
-       
+     
+   <ListItem>       
         <Button type="submit">Submit</Button>
    </ListItem>
  
