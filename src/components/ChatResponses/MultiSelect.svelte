@@ -1,38 +1,33 @@
 <script>
    import {Button,List,ListItem} from "framework7-svelte"
   export let addMessage;
-export let options;
-  export let placeholder
+  export let options;
+  export let placeholder = "Select";
 
   let values = [];
 
   function sendMessage() {
+      console.warn("VALUES:",values)
       addMessage({text:values.join(','),value:values});       
   }
-
-  function onChange(e) {
-    var value = e.target.value;
-    if (e.target.checked) {
-      values.push(value);
-    } else {
-      values.splice(values.indexOf(value), 1);
-    }
-    values = values;
-  }
-  
+ 
 
 </script>
 
 
   
 <List>
-  {#each options as multOption}
+ 
+  <ListItem title={placeholder} smartSelect smartSelectParams={{openIn: 'popover'}}>
+    <select name="multi" multiple bind:value={values} >
+      {#each options as multOption}
 
+          <option value={multOption}>{multOption}</option>
+      
+      {/each}
+    </select>
+  </ListItem>
 
-  <ListItem checkbox value={multOption} title={multOption} onChange={onChange}></ListItem>
-
-
-  {/each}
 </List>
 
 <Button
