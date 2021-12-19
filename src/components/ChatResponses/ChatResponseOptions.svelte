@@ -11,6 +11,7 @@
   import GetEmail from "./GetEmail.svelte";
   import ImgGallery from "./ImgGallery.svelte";
   import MultiSelect from "./MultiSelect.svelte";
+  import Form from "./Form.svelte";
   //import Calendar from "./Calendar.svelte";
 
   function addMessage(response) {
@@ -34,7 +35,7 @@
     {/if}
 
     {#if $lastMessage.replytype == 'email'}
-      <GetEmail {addMessage} />
+      <Form {addMessage} inputs={[{type:'email',placeholder:'Enter Email'}]}/>
     {/if}
 
     {#if $lastMessage.replytype == 'imgGallery'}
@@ -45,10 +46,15 @@
         <MultiSelect {addMessage} options={$lastMessage.options} placeholder={$lastMessage.text}/>
     {/if}
 
-    <!-- {#if $lastMessage.replytype == 'date'}
-        <Calendar {addMessage} type="date"/>
+    {#if $lastMessage.replytype == 'datetime'}
+        <Form {addMessage}/>
+    {/if}
+    
+     {#if $lastMessage.replytype == 'date'}
+      <Form {addMessage} inputs={[{type:'date',placeholder:'Select Date'}]}/>
     {/if}
 
+<!--
     {#if $lastMessage.replytype == 'time'}
         <Calendar {addMessage} type="time"/>
     {/if}
