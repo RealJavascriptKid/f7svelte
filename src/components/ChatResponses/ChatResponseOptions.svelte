@@ -7,12 +7,9 @@
 
 	const dispatch = createEventDispatcher();
 
-  import SendContainer from "./SendContainer.svelte";
-  import GetEmail from "./GetEmail.svelte";
   import ImgGallery from "./ImgGallery.svelte";
   import MultiSelect from "./MultiSelect.svelte";
   import Form from "./Form.svelte";
-  //import Calendar from "./Calendar.svelte";
 
   function addMessage(response) {
     dispatch('reply', response)
@@ -21,49 +18,18 @@
   
  <Block>
   {#if $lastMessage && $lastMessage.id}
-    
-    {#if $lastMessage.replytype == 'text'}
-      <SendContainer {addMessage} />
-    {/if}
-
-    {#if $lastMessage.replytype == 'fullName'}
-      <SendContainer {addMessage} />
-    {/if}
-
-    {#if $lastMessage.replytype == 'firstName'}
-      <SendContainer {addMessage} />
-    {/if}
-
-    {#if $lastMessage.replytype == 'email'}
-      <Form {addMessage} inputs={[{type:'email',placeholder:'Enter Email'}]}/>
-    {/if}
+  
 
     {#if $lastMessage.replytype == 'imgGallery'}
+
         <ImgGallery {addMessage} images={$lastMessage.images}/>
-    {/if}
 
-    {#if $lastMessage.replytype == 'multiSelect'}
+    {:else if $lastMessage.replytype == 'multiSelect'}
+
         <MultiSelect {addMessage} options={$lastMessage.options} placeholder={$lastMessage.text}/>
-    {/if}
 
-    {#if $lastMessage.replytype == 'datetime'}
-        <Form {addMessage}/>
-    {/if}
+    {:else if $lastMessage.replytype == 'button'}
     
-     {#if $lastMessage.replytype == 'date'}
-      <Form {addMessage} inputs={[{type:'date',placeholder:'Select Date'}]}/>
-    {/if}
-
-<!--
-    {#if $lastMessage.replytype == 'time'}
-        <Calendar {addMessage} type="time"/>
-    {/if}
-
-    {#if $lastMessage.replytype == 'datetime'}
-        <Calendar {addMessage} type="datetime"/>
-    {/if} -->
-
-    {#if $lastMessage.replytype == 'button'}
         <Row>
         {#each $lastMessage.buttons as btnOption}
          
@@ -75,6 +41,15 @@
           
         {/each}
         </Row>
+
+    {:else if $lastMessage.replytype == 'form'}    
+
+        <Form {addMessage} inputs={$lastMessage.inputs}/>
+
+    {:else}
+
+        <Form {addMessage} isSingleInput={true} inputs={[{type:$lastMessage.replytype,placeholder:$lastMessage.label}]}/>
+
     {/if}
 
   {/if}

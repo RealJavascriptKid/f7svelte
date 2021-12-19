@@ -3,6 +3,8 @@
 
     export let addMessage;
 
+    export let isSingleInput = false;
+
     export let inputs = [{
         type:'text',
         placeholder:'Enter First Name',
@@ -38,7 +40,7 @@
 
             <ListInput
             type="datepicker"
-                placeholder={input.placeholder}
+                placeholder={input.placeholder || 'Select Date'}
                 bind:value={input.value}
                 validate
                 readonly
@@ -48,24 +50,46 @@
         {:else if input.type == 'daterange'}
 
             <ListInput
-            type="datepicker"
-                placeholder={input.placeholder}
+                type="datepicker"
+                placeholder={input.placeholder || 'Select Date Range'}
                 bind:value={input.value}
                 validate
                 readonly
-                calendarParams={{openIn: 'customModal', header: true, footer: true, dateFormat: 'MM dd yyyy', rangePicker: true }}
+                calendarParams={{openIn: 'customModal', header: true, footer: true,  dateFormat: 'MM dd yyyy', rangePicker: true }}
             ></ListInput>
 
-        {:else}
+        {:else if input.type == 'datetime'}
 
             <ListInput
-                type={input.type}
-                placeholder={input.placeholder}
+                type="datepicker"
+                placeholder={input.placeholder || 'Select Date Time'}
+                bind:value={input.value}
+                validate
+                readonly
+                calendarParams={{openIn: 'customModal', header: true, footer: true,  dateFormat: 'MM dd yyyy H::mm:ss A', timePicker: true }}
+            ></ListInput>
+
+        {:else if input.type == 'firstName' || input.type == 'fullName'}
+
+            <ListInput
+                type="text"
+                placeholder={input.placeholder || input.type}
                 validate
                 clearButton
                 required
                 bind:value={input.value}
                 />
+
+        {:else }
+
+                <ListInput
+                    type={input.type}
+                    placeholder={input.placeholder || input.type}
+                    validate
+                    clearButton
+                    required
+                    bind:value={input.value}
+                    />        
 
         {/if}
     {/each}

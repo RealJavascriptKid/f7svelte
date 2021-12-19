@@ -40,7 +40,7 @@
     
   </Messagebar> 
   <Messages>
-    <MessagesTitle><b>Sunday, Feb 9,</b> 12:58</MessagesTitle>
+    
     <Message
         type='sent'
         name='Test'
@@ -89,7 +89,7 @@
     width: 100%;
   }  
 
-  :global(.toolbar-inner) {display:none}
+  :global(.messagebar .toolbar-inner) {display:none}
 
 </style>
 

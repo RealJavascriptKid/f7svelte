@@ -7,7 +7,7 @@ import DynamicRoutePage from '../pages/dynamic-route.svelte';
 import RequestAndLoad from '../pages/request-and-load.svelte';
 import NotFoundPage from '../pages/404.svelte';
 
-import Swiper from '../pages/swiper.svelte';
+import Test from '../pages/test.svelte';
 
 var routes = [
   {
@@ -24,8 +24,8 @@ var routes = [
   },
 
   {
-    path: '/swiper/',
-    component: Swiper,
+    path: '/test/',
+    component: Test,
   },
   {
     path: '/dynamic-route/blog/:blogId/post/:postId/',
