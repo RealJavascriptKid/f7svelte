@@ -28,9 +28,10 @@
         for(let input of inputs){
             console.log(`${input.placeholder}:`,input)
         }
-        
+        let val;
         if(isSingleInput){
-            addMessage(inputs[0].value);
+            val = inputs[0].value || '';
+            addMessage(val);
         }else{
             addMessage({text:'Form Data',value:inputs});
         }

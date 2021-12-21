@@ -48,7 +48,7 @@
 
     {:else}
 
-        <Form {addMessage} isSingleInput={true} inputs={[{type:$lastMessage.replytype,placeholder:$lastMessage.label}]}/>
+        <Form {addMessage} isSingleInput={true} inputs={[{type:$lastMessage.replytype,required:$lastMessage.required,placeholder:$lastMessage.label}]}/>
 
     {/if}
 

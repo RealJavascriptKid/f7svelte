@@ -136,15 +136,14 @@
           "replytype":"button",
           "typingDelay":0.4,
           "text":"Please choose one below {firstName}",
-          "buttons":[
-          {"value":"Form","nextId":"Form"},
-          {"value":"MultiSelect","nextId":"MultiSelect"},
-          {"value":"ImgGallery","nextId":"ImgGallery"},
-          {"value":"fullName","nextId":"fullName"},
-          {"value":"Text","nextId":"Text"},
-          {"value":"Email","nextId":"Email"}
-        ]},
-        "fullName":{"id":"fullName","user":"you","text":"Please provide you full name","typingDelay":0.4,"replytype":"fullName","nextId":"start"},
+          "buttons":[{"value":"Form","nextId":"Form"},
+                    {"value":"MultiSelect","nextId":"MultiSelect"},
+                    {"value":"ImgGallery","nextId":"ImgGallery"},
+                    {"value":"fullName","nextId":"fullName"},
+                    {"value":"Text","nextId":"Text"},
+                    {"value":"Email","nextId":"Email"}]
+        },
+        "fullName":{"id":"fullName","user":"you","text":"Please provide you full name","typingDelay":0.4,"replytype":"fullName","required":true,"nextId":"start"},
         "Form":{"id":"Form","replytype":"form","typingDelay":0.4,"nextId":"start"},
         "MultiSelect":{"id":"MultiSelect","replytype":"multiSelect","typingDelay":0.4,"nextId":"start","options":["SEO","Web Design","Web Development","AWS","Chat Bots"]},
         "ImgGallery":{"id":"ImgGallery","replytype":"imgGallery","typingDelay":0.4,"images":[{"value":"Yelp","src":"https://cdn.iconscout.com/icon/free/png-256/yelp-35-722661.png","nextId":"start"},{"value":"Google","src":"https://media.wired.com/photos/5926ffe47034dc5f91bed4e8/master/pass/google-logo.jpg","nextId":"start"}]},
