@@ -30,11 +30,12 @@
   </style>
 
 
-    <Swiper navigation speed={500} slidesPerView={3} spaceBetween={20} 
+    <Swiper pagination navigation  slidesPerView={3} spaceBetween={20} 
 		on:click={onSelect}>
 		{#each images as image (image.value)}
 		<SwiperSlide data-value={image.value}>
 			<img
+			style="width:100%;height:100%"
 			src={image.src}
 			alt={image.text}
 			id={image.value}
