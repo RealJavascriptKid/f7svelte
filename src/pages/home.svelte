@@ -108,21 +108,24 @@
   let showReplyOptions = false,
       waiting = 0;
 
-      function reply(event) {
-    let obj = event.detail;
-    if (typeof obj === "string") obj = { text: obj, value: obj };
+  function reply(event) {
 
-    if (typeof obj.value === "undefined" && typeof obj.text !== "undefined")
-      obj.value = obj.text;
+        let obj = event.detail;
+        if (typeof obj === "string") obj = { text: obj, value: obj };
 
-    if (typeof obj.text === "undefined" && typeof obj.value !== "undefined")
-      obj.text = obj.value;
+        if (typeof obj.value === "undefined" && typeof obj.text !== "undefined")
+          obj.value = obj.text;
 
-    if (obj.value === null) return;
+        if (typeof obj.text === "undefined" && typeof obj.value !== "undefined")
+          obj.text = obj.value;
 
-    $messages = [...$messages, { user: "me", text: obj.text }];
+        if (obj.value === null) return;
 
-    fetchNextMessage(obj.value);
+        if(obj.text)
+          $messages = [...$messages, { user: "me", text: obj.text }];
+
+        fetchNextMessage(obj.value);
+
   }
 
   async function getBotData() {
