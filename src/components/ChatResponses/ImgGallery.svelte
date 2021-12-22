@@ -27,6 +27,16 @@
 	  box-sizing: border-box;
 	  border: 1px solid #ccc;
 	}
+
+	.img {
+		object-fit: cover;
+		max-width: 100%;
+		max-height: 100%;
+		width: auto;
+		height: auto;
+		}
+	
+
   </style>
 
 
@@ -34,12 +44,13 @@
 		on:click={onSelect}>
 		{#each images as image (image.value)}
 		<SwiperSlide data-value={image.value}>
-			<img
-			style="width:100%;height:100%"
-			src={image.src}
-			alt={image.text}
-			id={image.value}
-			/>		
+			<div style="width:100%;height:100%">
+				<img class="img"			
+				src={image.src}
+				alt={image.text}
+				id={image.value}
+				/>
+			</div>					
 			
 		</SwiperSlide>
 	   {/each}	
