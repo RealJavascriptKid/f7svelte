@@ -41,14 +41,6 @@
   </Messagebar> 
   <Messages>
     
-    <Message
-        type='sent'
-        name='Test'
-        text='Test Message'
-      > 
-      
-    </Message>
-
     {#each $messages as message, index (index)}
       <Message
         type={(message.user == 'me')?'sent':'received'}
@@ -129,6 +121,10 @@
   }
 
   async function getBotData() {
+
+    if(window.offlineBOTData){
+        return window.offlineBOTData;   
+    }
 
     if(true){ //temporary
       bot = {"botId":"testBotId","name":"Saad","img":"https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144","online":true,"newMessage":false,"firstMsgId":"start",
