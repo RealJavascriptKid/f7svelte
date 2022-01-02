@@ -219,7 +219,7 @@
 
     let url = $activeBotData.dataUrl,
         data = {
-          botid:$activeBotData.botid,
+          botid:$activeBotData.botId,
           sessionid,
           ...JSON.parse(JSON.stringify($collectedData))
         };
