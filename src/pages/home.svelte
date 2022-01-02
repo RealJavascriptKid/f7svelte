@@ -1,5 +1,5 @@
 <Page name="home">
-  <Navbar title="Messages" />
+  <Navbar title={navbartitle} />
 
 <Messagebar
     sheetVisible={showReplyOptions}
@@ -97,6 +97,8 @@
 
   let bot=`http://localhost:9991/bot/testAll`; //it is either data or url to get Bot data
 
+  let navbartitle = 'Messages';
+
   let showReplyOptions = false,
       waiting = 0;
 
@@ -122,12 +124,23 @@
 
   async function getBotData() {
 
+     if(window.parent && window.parent.offlineBOTData)
+        window.offlineBOTData = window.parent.offlineBOTData;  //get BOT data from parent
+
     if(window.offlineBOTData){
         return window.offlineBOTData;   
     }
 
     if(true){ //temporary
-      bot = {"botId":"testBotId","name":"Saad","img":"https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144","online":true,"newMessage":false,"firstMsgId":"start",
+      bot = {
+      "botId":"testBotId",
+      "name":"Saad",
+      "title":"Conversation",
+      "img":"https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144",
+      "online":true,
+      "newMessage":false,
+      "firstMsgId":"start",
+      "dataUrl":"https://hidollars.newyearworks.com/analytics.php",
       "flow":{
         "start":{
           "id":"start","user":"you","time":"a moment ago",
@@ -144,7 +157,7 @@
         },
         "fullName":{"id":"fullName","user":"you","text":"Please provide you full name","typingDelay":0.4,"replytype":"fullName","required":true,"nextId":"start"},
         "Form":{"id":"Form","replytype":"form","typingDelay":0.4,"nextId":"start"},
-        "MultiSelect":{"id":"MultiSelect","replytype":"multiSelect","typingDelay":0.4,"nextId":"start","options":["SEO","Web Design","Web Development","AWS","Chat Bots"]},
+        "MultiSelect":{"id":"MultiSelect","replytype":"multiSelect","dataProperty":"skills","typingDelay":0.4,"nextId":"start","options":["SEO","Web Design","Web Development","AWS","Chat Bots"]},
         "ImgGallery":{"id":"ImgGallery","replytype":"imgGallery","typingDelay":0.4,"images":[
           {"value":"Yelp","src":"https://cdn.iconscout.com/icon/free/png-256/yelp-35-722661.png","nextId":"start"},
           {"value":"Yelp 2","src":"https://cdn.iconscout.com/icon/free/png-256/yelp-35-722661.png","nextId":"start"},
@@ -152,8 +165,9 @@
           {"value":"Yelp 4","src":"https://cdn.iconscout.com/icon/free/png-256/yelp-35-722661.png","nextId":"start"},
           {"value":"Google","src":"https://media.wired.com/photos/5926ffe47034dc5f91bed4e8/master/pass/google-logo.jpg","nextId":"start"}
         ]},
-        "Text":{"id":"Text","replytype":"text","typingDelay":0.4,"nextId":"start"},
-        "Email":{"id":"Email","replytype":"email","typingDelay":0.4,"nextId":"start"}}}
+        "Text":{"id":"Text","replytype":"text","typingDelay":0.4,"nextId":"start","sendData":true},
+        "Email":{"id":"Email","replytype":"email","typingDelay":0.4,"nextId":"start"}}
+      }
     }
 
     if (typeof bot === "object") {
@@ -176,6 +190,54 @@
     }
   }
 
+  function generateUUID() { // Public Domain/MIT
+    var d = new Date().getTime();//Timestamp
+    var d2 = ((typeof performance !== 'undefined') && performance.now && (performance.now()*1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16;//random number between 0 and 16
+        if(d > 0){//Use timestamp until depleted
+            r = (d + r)%16 | 0;
+            d = Math.floor(d/16);
+        } else {//Use microseconds since page-load if supported
+            r = (d2 + r)%16 | 0;
+            d2 = Math.floor(d2/16);
+        }
+        return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+}
+
+  async function sendData(){
+
+    if(!$activeBotData || !$activeBotData.dataUrl)
+        return;
+      
+    let sessionid = localStorage.botClientId || '';
+    if(!sessionid){
+      sessionid = generateUUID();
+      localStorage.botClientId = sessionid;
+    }
+
+    let url = $activeBotData.dataUrl,
+        data = {
+          botid:$activeBotData.botid,
+          sessionid,
+          ...JSON.parse(JSON.stringify($collectedData))
+        };
+
+    try {
+     
+      let res = await axios({
+        url,
+        method: "POST",
+        data
+      });
+      return res.data;
+    } catch (err) {
+      console.log("Sending Data Error:", err);
+      return {};
+    }
+  }
+
   async function getNextMessage(response) {
     let wait = (time) => {
       return new Promise((res) => setTimeout(res, time * 1000));
@@ -184,6 +246,11 @@
     let defaultReply = { time: "Chat is ended", text: "", replytype: "done" };
 
     let getNextMsg = async (id) => {
+
+      if(id && $lastMessage.sendData){ //it means it is NOT first message
+          await sendData();
+      }
+
       if (!$activeBotData.flow) return defaultReply;
 
       if (!id) id = $activeBotData.firstMsgId;
@@ -309,7 +376,8 @@
 
     res = filterDynamicTextFromReplyMsg(res);
 
-    $messages = [...$messages, res];
+    if(res.text)
+      $messages = [...$messages, res];
     $lastMessage = res;
     waiting--;
     return res;
@@ -317,6 +385,10 @@
 
   const initBot = async () => {
     let data = await getBotData();
+    
+    if(data.title)
+      navbartitle = data.title;
+
     $messages = [];
     $activeBotData = data;
     $collectedData = {};
