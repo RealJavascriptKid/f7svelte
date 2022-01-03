@@ -95,7 +95,9 @@
   import { messages } from "../stores/messages";
   import ChatResponseOptions from "../components/ChatResponses/ChatResponseOptions.svelte";
 
-  let bot=`http://localhost:9991/bot/testAll`; //it is either data or url to get Bot data
+  import {testBotData} from "../stores/testBotData";
+
+  let bot= window.botUrl || testBotData || `http://localhost:9991/bot/testAll`; //it is either data or url to get Bot data
 
   let navbartitle = 'Messages';
 
@@ -123,52 +125,6 @@
   }
 
   async function getBotData() {
-
-     if(window.parent && window.parent.offlineBOTData)
-        window.offlineBOTData = window.parent.offlineBOTData;  //get BOT data from parent
-
-    if(window.offlineBOTData){
-        return window.offlineBOTData;   
-    }
-
-    if(true){ //temporary
-      bot = {
-      "botId":"testBotId",
-      "name":"Saad",
-      "title":"Conversation",
-      "img":"https://images.unsplash.com/photo-1549078642-b2ba4bda0cdb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=3&w=144&h=144",
-      "online":true,
-      "newMessage":false,
-      "firstMsgId":"start",
-      "dataUrl":"https://hidollars.newyearworks.com/analytics.php",
-      "flow":{
-        "start":{
-          "id":"start","user":"you","time":"a moment ago",
-          "dataProperty":"testingWhat",
-          "replytype":"button",
-          "typingDelay":0.4,
-          "text":"Please choose one below {firstName}",
-          "buttons":[{"value":"Form","nextId":"Form"},
-                    {"value":"MultiSelect","nextId":"MultiSelect"},
-                    {"value":"ImgGallery","nextId":"ImgGallery"},
-                    {"value":"fullName","nextId":"fullName"},
-                    {"value":"Text","nextId":"Text"},
-                    {"value":"Email","nextId":"Email"}]
-        },
-        "fullName":{"id":"fullName","user":"you","text":"Please provide you full name","typingDelay":0.4,"replytype":"fullName","required":true,"nextId":"start"},
-        "Form":{"id":"Form","replytype":"form","typingDelay":0.4,"nextId":"start"},
-        "MultiSelect":{"id":"MultiSelect","replytype":"multiSelect","dataProperty":"skills","typingDelay":0.4,"nextId":"start","options":["SEO","Web Design","Web Development","AWS","Chat Bots"]},
-        "ImgGallery":{"id":"ImgGallery","replytype":"imgGallery","typingDelay":0.4,"images":[
-          {"value":"Yelp","src":"https://cdn.iconscout.com/icon/free/png-256/yelp-35-722661.png","nextId":"start"},
-          {"value":"Yelp 2","src":"https://cdn.iconscout.com/icon/free/png-256/yelp-35-722661.png","nextId":"start"},
-          {"value":"Yelp 3","src":"https://cdn.iconscout.com/icon/free/png-256/yelp-35-722661.png","nextId":"start"},
-          {"value":"Yelp 4","src":"https://cdn.iconscout.com/icon/free/png-256/yelp-35-722661.png","nextId":"start"},
-          {"value":"Google","src":"https://media.wired.com/photos/5926ffe47034dc5f91bed4e8/master/pass/google-logo.jpg","nextId":"start"}
-        ]},
-        "Text":{"id":"Text","replytype":"text","typingDelay":0.4,"nextId":"start","sendData":true},
-        "Email":{"id":"Email","replytype":"email","typingDelay":0.4,"nextId":"start"}}
-      }
-    }
 
     if (typeof bot === "object") {
       //we assume here bot data is passed as prop lets return it
@@ -246,10 +202,7 @@
     let defaultReply = { time: "Chat is ended", text: "", replytype: "done" };
 
     let getNextMsg = async (id) => {
-
-      if(id && $lastMessage.sendData){ //it means it is NOT first message
-          await sendData();
-      }
+     
 
       if (!$activeBotData.flow) return defaultReply;
 
@@ -276,6 +229,10 @@
             //if dataProperty is specified then override it
 
             $collectedData[$lastMessage.dataProperty] = response;
+
+            if($lastMessage.sendData) 
+                await sendData();
+      
             break; //breaks the switch statement
           }
 
@@ -284,6 +241,8 @@
 
           $collectedData.fullName = response;
           $collectedData.firstName = firstName;
+          if($lastMessage.sendData) 
+             await sendData();
 
           return getNextMsg($lastMessage.nextId);
           break;
@@ -296,6 +255,8 @@
           }
 
           $collectedData.firstName = response;
+          if($lastMessage.sendData) 
+                await sendData();
 
           return getNextMsg($lastMessage.nextId);
           break;
@@ -307,7 +268,16 @@
           let opts = $lastMessage.buttons;
           for (let opt of opts) {
             if (opt.value == response) {
-              if (!opt.nextId) return defaultReply;
+              if($lastMessage.sendData) 
+                await sendData();
+              
+              if(opt.redirect){
+                window.location = opt.redirect;
+                return;
+              }
+                
+              if (!opt.nextId) 
+                return defaultReply;
 
               return getNextMsg(opt.nextId);
               break; //break loop NOT switch statment
