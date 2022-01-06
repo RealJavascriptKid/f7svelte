@@ -33,7 +33,23 @@
             val = inputs[0].value || '';
             addMessage(val);
         }else{
-            addMessage({text:'Form Data',value:inputs});
+            let text = '';
+            for(let input of inputs){
+               switch (input.type) {                 
+                   case 'date':
+                       if(input.value.length)
+                            text += `<li>${input.value[0]}</li>`
+                       break;
+                   case 'daterange':
+                       if(input.value.length == 2)
+                            text += `<li>${input.value[0]} - ${input.value[1]}</li>`
+                       break;    
+                   default:
+                        text += `<li>${input.value}</li>`
+                       break;
+               }
+            }
+            addMessage({text,value:inputs});
         }
         
    }
