@@ -13,7 +13,7 @@
     },{
         type:'email',
         placeholder:'Enter Email',
-        required:true
+        required:false
     },{
         type:'date',
         placeholder:'Enter DOB',
@@ -35,17 +35,20 @@
         }else{
             let text = '';
             for(let input of inputs){
+               
+                if(!input.value)
+                    continue;
                switch (input.type) {                 
                    case 'date':
                        if(input.value.length)
-                            text += `<li>${input.value[0]}</li>`
+                            text += `\n${input.value[0].toLocaleDateString()}`
                        break;
                    case 'daterange':
                        if(input.value.length == 2)
-                            text += `<li>${input.value[0]} - ${input.value[1]}</li>`
+                            text += `\n${input.value[0].toLocaleDateString()} - ${input.value[1].toLocaleDateString()}`
                        break;    
                    default:
-                        text += `<li>${input.value}</li>`
+                        text += `${input.value}`
                        break;
                }
             }
