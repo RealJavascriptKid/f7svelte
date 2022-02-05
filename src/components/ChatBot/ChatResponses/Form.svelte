@@ -13,7 +13,7 @@
     },{
         type:'email',
         placeholder:'Enter Email',
-        required:true
+        required:false
     },{
         type:'date',
         placeholder:'Enter DOB',
@@ -33,7 +33,26 @@
             val = inputs[0].value || '';
             addMessage(val);
         }else{
-            addMessage({text:'Form Data',value:inputs});
+            let text = '';
+            for(let input of inputs){
+               
+                if(!input.value)
+                    continue;
+               switch (input.type) {                 
+                   case 'date':
+                       if(input.value.length)
+                            text += `\n${input.value[0].toLocaleDateString()}`
+                       break;
+                   case 'daterange':
+                       if(input.value.length == 2)
+                            text += `\n${input.value[0].toLocaleDateString()} - ${input.value[1].toLocaleDateString()}`
+                       break;    
+                   default:
+                        text += `${input.value}`
+                       break;
+               }
+            }
+            addMessage({text,value:inputs});
         }
         
    }
