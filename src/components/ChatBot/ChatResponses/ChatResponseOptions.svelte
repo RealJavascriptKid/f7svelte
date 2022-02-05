@@ -1,7 +1,7 @@
 <script>
   import { Block,Row, Col, Button } from 'framework7-svelte';
   
-   import {lastMessage} from "../../stores/lastMessage";  
+   import {lastMessage} from "../stores/lastMessage";  
 
   import { createEventDispatcher,afterUpdate } from 'svelte';
 
