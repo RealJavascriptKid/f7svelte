@@ -83,6 +83,9 @@
   </style>
   
   <script>
+    export let bot;
+    export let onDataSend;
+
    import axios from "axios";
   
     import { onDestroy, onMount } from "svelte";
@@ -94,7 +97,8 @@
   
     import {testBotData} from "./stores/testBotData";
   
-    let bot= window.botUrl || testBotData || `http://localhost:9991/bot/testAll`; //it is either data or url to get Bot data
+    if(!bot)
+     bot= window.botUrl || testBotData || `http://localhost:9991/bot/testAll`; //it is either data or url to get Bot data
   
     let navbartitle = 'Messages';
   
@@ -161,8 +165,10 @@
   
     async function sendData(){
   
-      if(!$activeBotData || !$activeBotData.dataUrl)
-          return;
+      if(!$activeBotData || !$activeBotData.dataUrl){
+          if(typeof onDataSend !== 'function')          
+            return;
+      }
         
       let sessionid = localStorage.botClientId || '';
       if(!sessionid){
@@ -178,13 +184,20 @@
           };
   
       try {
+        
+        if(typeof onDataSend === 'function'){
+
+            onDataSend(data)            
+        }else{
+
+            let res = await axios({
+                url,
+                method: "POST",
+                data
+            });
+            return res.data;
+        }
        
-        let res = await axios({
-          url,
-          method: "POST",
-          data
-        });
-        return res.data;
       } catch (err) {
         console.log("Sending Data Error:", err);
         return {};
@@ -289,6 +302,10 @@
             let imgs = $lastMessage.images;
             for (let img of imgs) {
               if (img.value == response) {
+
+                if($lastMessage.sendData) 
+                  await sendData();
+
                 if (!img.nextId) return defaultReply;
   
                 return getNextMsg(img.nextId);
@@ -300,7 +317,8 @@
           default:
             if ($lastMessage.dataProperty)
               $collectedData[$lastMessage.dataProperty] = response;
-  
+              if($lastMessage.sendData) 
+                  await sendData();
             return getNextMsg($lastMessage.nextId);
             break;
         }
